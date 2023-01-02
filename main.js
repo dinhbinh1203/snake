@@ -13,17 +13,25 @@ const gameBoard = document.querySelector("#gameBoard");
 const context = gameBoard.getContext("2d");
 const scoreText = document.querySelector("#scoreText");
 const rankingGame = document.getElementById("rankingGame");
-
 const btnVolume = document.getElementById("volume");
 const buttonMoves = document.querySelectorAll(".button__move");
-var audio = new Audio("assets/music.mp3");
+
+const unitSize = 20;
+const tools = document.getElementById("tools");
+const valueWidth = Math.floor((screen.width * 0.8) / unitSize) * unitSize;
+const valueHeight = Math.floor((screen.height * 0.6) / unitSize) * unitSize;
+
+tools.style.width = `${valueWidth}px`;
+gameBoard.width = `${valueWidth}`;
+gameBoard.height = `${valueHeight}`;
+
 const gameWidth = gameBoard.width;
 const gameHeight = gameBoard.height;
 const boardBackground = "pink";
 const snakeColor = "#92400e";
 const snakeBorder = "black";
 const foodColor = "red";
-const unitSize = 20;
+
 var running = false;
 var xVelocity = unitSize;
 var yVelocity = 0;
@@ -40,8 +48,8 @@ var snake = [
 ];
 var speed;
 var chooseDirection;
-var listPlayer = [];
 
+var audio = new Audio("assets/music.mp3");
 // On Off Volumn
 btnVolume.onclick = function () {
   if (btnVolume.textContent.includes("volume_off")) {
@@ -53,7 +61,6 @@ btnVolume.onclick = function () {
     btnVolume.textContent = "volume_off";
   }
 };
-
 
 buttonMoves.forEach((buttonMove, index) => {
   buttonMove.onclick = function (e) {
@@ -156,9 +163,7 @@ function drawFood() {
 }
 
 function moveSnake() {
-  if (
-    !continueGame.classList.value.includes("active") 
-  ) {
+  if (!continueGame.classList.value.includes("active")) {
     let checkMode;
     chooseModes.forEach((chooseMode, index) => {
       if (chooseMode.classList.value.includes("active")) {
@@ -310,13 +315,6 @@ function displayGameOver() {
     lostGame.classList.remove("active");
     resetGame();
   };
-  var today = new Date();
-  var time =
-    today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-  console.log("time", time);
-  console.log("score", score);
-  listPlayer = [...listPlayer, { time: time, score: score }];
-  console.log("listPlayer", listPlayer);
 }
 
 function resetGame() {
@@ -335,4 +333,3 @@ function resetGame() {
   ];
   chooseDirection = undefined;
 }
-
