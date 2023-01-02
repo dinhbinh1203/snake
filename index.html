@@ -29,9 +29,15 @@
         <div id="wrapper__board">
           <div id="tools">
             <div class="wrapper__pause">
-              <div id="score">Score: <span>0</span></div>
+              <div id="score">Score: <span id="scoreText">0</span></div>
             </div>
             <div class="wrapper__pause">
+              <span class="material-symbols-outlined" id="button__help">
+                help
+              </span>
+              <span class="material-symbols-outlined" id="button__volume">
+                volume_up
+                </span>
               <span class="material-symbols-outlined" id="button__pause">
                 pause_circle
               </span>
@@ -40,7 +46,7 @@
               </span>
             </div>
           </div>
-          <canvas id="board"></canvas>
+          <canvas id="gameBoard" width="1000" height="500"></canvas>
           <div id="move">
             <div class="wrapper__move">
               <span
@@ -72,7 +78,7 @@
             </div>
           </div>
         </div>
-        <div id="startGame" class="active">
+        <!-- <div id="startGame" class="active">
           <div id="container__startGame">
             <h3 class="title__game">GAME SNAKE</h3>
             <div class="wrapper__mode">
@@ -86,6 +92,18 @@
                 >
                 <span id="mode__two" class="choose choose__mode"
                   >Mode 2
+                  <span class="material-symbols-outlined mode__done">
+                    done
+                  </span></span
+                >
+                <span id="mode__two" class="choose choose__mode"
+                  >Mode 3
+                  <span class="material-symbols-outlined mode__done">
+                    done
+                  </span></span
+                >
+                <span id="mode__two" class="choose choose__mode"
+                  >Mode 4
                   <span class="material-symbols-outlined mode__done">
                     done
                   </span></span
@@ -120,6 +138,20 @@
             </div>
           </div>
         </div>
+        <div id="continueGame">
+          <div id="btnContinueGame">Continue</div>
+        </div>
+        <div id="lostGame">
+          <div class="wrapper__lostGame">
+            <div class="lostGame__title">YOU LOST</div>
+            <div class="lostGame__content">
+              YOUR SCORE IS: <span id="lostGame__score"></span>
+            </div>
+            <span class="material-symbols-outlined" id="btnPlayAgain">
+              autorenew
+            </span>
+          </div>
+        </div> -->
       </div>
     </div>
     <script type="module" src="./main.js"></script>

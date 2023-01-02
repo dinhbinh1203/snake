@@ -23,9 +23,9 @@ body {
   width: 100%;
 }
 
-#board {
-  height: 60vh;
-  width: 80%;
+#gameBoard {
+  /* height: 60vh;
+  width: 80%; */
   background-color: white;
 }
 
@@ -44,27 +44,22 @@ body {
   cursor: pointer;
 }
 
+
+#button__help,
+#button__reset,
 #button__pause {
-  padding: 2px;
+  padding: 4px;
   border: 2px solid #1c1917;
   border-radius: 4px;
   margin-bottom: 4px;
   margin-right: 4px;
+  font-size: 42px;
 }
 
+
+#button__help:hover,
+#button__reset:hover,
 #button__pause:hover {
-  transition: 0.4s ease-out;
-  background-color: #d97706;
-}
-
-#button__reset {
-  padding: 2px;
-  border: 2px solid #1c1917;
-  border-radius: 4px;
-  margin-bottom: 4px;
-}
-
-#button__reset:hover {
   transition: 0.4s ease-out;
   background-color: #d97706;
 }
@@ -186,7 +181,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  display:none;
+  display: none;
 }
 
 #startGame.active {
@@ -195,7 +190,7 @@ body {
 
 #container__startGame {
   height: 100%;
-  width: 80%;
+  width: 82%;
   background-color: #713f12;
 }
 
@@ -265,6 +260,36 @@ body {
   margin-top: 50px;
 }
 
+#continueGame {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  font-size: 50px;
+  font-family: "Balsamiq Sans", cursive;
+  font-weight: 700;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  display: none;
+}
+
+#continueGame.active {
+  display: flex;
+}
+
+#btnContinueGame {
+  height: 100%;
+  width: 82%;
+  background-color: #713f12;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
 /* CSS */
 #btnStart {
   font-family: "Balsamiq Sans", cursive;
@@ -322,6 +347,83 @@ body {
   display: inline-block;
 }
 
+#move {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 12px;
+}
+
+.wrapper__move {
+  margin-bottom: 4px;
+}
+
+.button__move {
+  background-color: #d97706;
+  color: white;
+  padding: 16px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-family: "Prosto One", cursive;
+  border: 4px solid #92400e;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.button__move:hover {
+  transition: all 0.3s;
+  background-color: #f97316;
+}
+
+#lostGame {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  font-family: "Balsamiq Sans", cursive;
+  font-weight: 700;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  display: none;
+}
+
+#lostGame.active {
+  display: flex;
+}
+
+.wrapper__lostGame {
+  height: 100%;
+  width: 82%;
+  background-color: #713f12;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.lostGame__title {
+  font-size: 60px;
+  margin-bottom: 18px;
+}
+
+.lostGame__content {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+#btnPlayAgain {
+  font-size: 72px;
+  cursor: pointer;
+}
+
+#btnPlayAgain:hover {
+  transform: scale(1.1);
+  transition: all 0.3s;
+}
+
 @media (max-width: 1047px) {
   .wrapper__speed,
   .wrapper__mode {
@@ -366,4 +468,23 @@ body {
   #btnStart {
     padding: 0.6rem 2rem;
   }
+}
+
+#gameContainer {
+  text-align: center;
+}
+
+#gameBoard {
+  border: 3px solid;
+  background-color: pink;
+}
+
+#resetBtn {
+  font-family: "Permanent Marker", cursive;
+  font-size: 22px;
+  width: 100px;
+  height: 50px;
+  border: 4px solid;
+  border-radius: 15px;
+  cursor: pointer;
 }
