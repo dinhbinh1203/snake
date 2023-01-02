@@ -13,9 +13,9 @@ const gameBoard = document.querySelector("#gameBoard");
 const context = gameBoard.getContext("2d");
 const scoreText = document.querySelector("#scoreText");
 const rankingGame = document.getElementById("rankingGame");
-const btnBackGame = document.getElementById("btnBackGame");
-const btnRanking = document.getElementById("button__ranking");
+
 const btnVolume = document.getElementById("volume");
+const buttonMoves = document.querySelectorAll(".button__move");
 var audio = new Audio("assets/music.mp3");
 const gameWidth = gameBoard.width;
 const gameHeight = gameBoard.height;
@@ -24,20 +24,43 @@ const snakeColor = "#92400e";
 const snakeBorder = "black";
 const foodColor = "red";
 const unitSize = 20;
-let running = false;
-let xVelocity = unitSize;
-let yVelocity = 0;
-let foodX;
-let foodY;
-let score = 0;
-let snake = [
+var running = false;
+var xVelocity = unitSize;
+var yVelocity = 0;
+var foodX;
+var foodY;
+var score = 0;
+var snake = [
+  { x: unitSize * 5, y: 0 },
   { x: unitSize * 4, y: 0 },
   { x: unitSize * 3, y: 0 },
   { x: unitSize * 2, y: 0 },
   { x: unitSize, y: 0 },
   { x: 0, y: 0 },
 ];
-let speed;
+var speed;
+var chooseDirection;
+var listPlayer = [];
+
+// On Off Volumn
+btnVolume.onclick = function () {
+  if (btnVolume.textContent.includes("volume_off")) {
+    audio.loop = true;
+    audio.play();
+    btnVolume.textContent = "volume_up";
+  } else {
+    audio.pause();
+    btnVolume.textContent = "volume_off";
+  }
+};
+
+
+buttonMoves.forEach((buttonMove, index) => {
+  buttonMove.onclick = function (e) {
+    chooseDirection = index;
+  };
+});
+
 // change mode
 chooseModes.forEach((chooseMode, index) => {
   chooseMode.onclick = function (e) {
@@ -54,28 +77,27 @@ chooseSpeeds.forEach((chooseSpeed, index) => {
   };
 });
 
-// Display none container startGame
+// On off container startGame
 btnStart.onclick = function () {
   startGame.classList.remove("active");
   resetGame();
 };
 
-// Display flex container startGame
 btnReset.onclick = function () {
   startGame.classList.add("active");
 };
 
-// Display none container continueGame
+// On off container continueGame
 btnContinueGame.onclick = function () {
   continueGame.classList.remove("active");
 };
 
-// display flex container continueGame
 btnPause.onclick = function () {
   continueGame.classList.add("active");
 };
 
-window.addEventListener("keydown", changeDirection);
+window.addEventListener("keydown", changeDirectionWithKeyCode);
+window.addEventListener("click", changeDirectionWithButton);
 
 function gameStart() {
   running = true;
@@ -102,7 +124,7 @@ function nextTick() {
 
   if (running) {
     setTimeout(() => {
-      clearBoard();
+      clearGame();
       drawFood();
       moveSnake();
       drawSnake();
@@ -115,7 +137,7 @@ function nextTick() {
     }
   }
 }
-function clearBoard() {
+function clearGame() {
   context.fillStyle = boardBackground;
   context.fillRect(0, 0, gameWidth, gameHeight);
 }
@@ -134,7 +156,9 @@ function drawFood() {
 }
 
 function moveSnake() {
-  if (!continueGame.classList.value.includes("active") && !rankingGame.classList.value.includes("active")) {
+  if (
+    !continueGame.classList.value.includes("active") 
+  ) {
     let checkMode;
     chooseModes.forEach((chooseMode, index) => {
       if (chooseMode.classList.value.includes("active")) {
@@ -144,27 +168,26 @@ function moveSnake() {
 
     let head = { x: snake[0].x + xVelocity, y: snake[0].y + yVelocity };
     if (checkMode === 1) {
-      if (snake[0].x >= gameWidth) {
-        xVelocity = unitSize;
-        yVelocity = 0;
-        head = { x: 0 + xVelocity - unitSize, y: snake[0].y + yVelocity };
-      }
-
-      if (snake[0].x < 0) {
-        xVelocity = -unitSize;
-        head = { x: gameWidth + xVelocity, y: snake[0].y + yVelocity };
-      }
-
-      if (snake[0].y > gameHeight) {
-        xVelocity = 0;
-        yVelocity = unitSize;
-        head = { x: snake[0].x + xVelocity, y: 0 + yVelocity - unitSize };
-      }
-
-      if (snake[0].y < 0) {
-        // xVelocity = 0;
-        yVelocity = -unitSize;
-        head = { x: snake[0].x + xVelocity, y: gameHeight + yVelocity };
+      switch (true) {
+        case snake[0].x >= gameWidth:
+          xVelocity = unitSize;
+          yVelocity = 0;
+          head = { x: 0 + xVelocity - unitSize, y: snake[0].y + yVelocity };
+          break;
+        case snake[0].x < 0:
+          xVelocity = -unitSize;
+          head = { x: gameWidth + xVelocity, y: snake[0].y + yVelocity };
+          break;
+        case snake[0].y > gameHeight:
+          xVelocity = 0;
+          yVelocity = unitSize;
+          head = { x: snake[0].x + xVelocity, y: 0 + yVelocity - unitSize };
+          break;
+        case snake[0].y < 0:
+          xVelocity = 0;
+          yVelocity = -unitSize;
+          head = { x: snake[0].x + xVelocity, y: gameHeight + yVelocity };
+          break;
       }
     }
     snake.unshift(head);
@@ -186,13 +209,14 @@ function drawSnake() {
   });
 }
 
-function changeDirection(event) {
+function changeDirectionWithKeyCode(event) {
   const keyPressed = event.keyCode;
   const LEFT = 37;
   const UP = 38;
   const RIGHT = 39;
   const DOWN = 40;
 
+  // check if snake direction top and press dow not game over
   const goingUp = yVelocity == -unitSize;
   const goingDown = yVelocity == unitSize;
   const goingRight = xVelocity == unitSize;
@@ -211,6 +235,33 @@ function changeDirection(event) {
       yVelocity = 0;
       break;
     case keyPressed == DOWN && !goingUp:
+      xVelocity = 0;
+      yVelocity = unitSize;
+      break;
+  }
+}
+
+// changeDirectionWithButton(
+function changeDirectionWithButton(event) {
+  const goingUp = yVelocity == -unitSize;
+  const goingDown = yVelocity == unitSize;
+  const goingRight = xVelocity == unitSize;
+  const goingLeft = xVelocity == -unitSize;
+
+  switch (true) {
+    case chooseDirection == 1 && !goingRight:
+      xVelocity = -unitSize;
+      yVelocity = 0;
+      break;
+    case chooseDirection == 0 && !goingDown:
+      xVelocity = 0;
+      yVelocity = -unitSize;
+      break;
+    case chooseDirection == 3 && !goingLeft:
+      xVelocity = unitSize;
+      yVelocity = 0;
+      break;
+    case chooseDirection == 2 && !goingUp:
       xVelocity = 0;
       yVelocity = unitSize;
       break;
@@ -251,6 +302,7 @@ function checkGameOver() {
     }
   }
 }
+
 function displayGameOver() {
   lostGame.classList.add("active");
   lostGameScore.textContent = scoreText.textContent;
@@ -258,40 +310,29 @@ function displayGameOver() {
     lostGame.classList.remove("active");
     resetGame();
   };
+  var today = new Date();
+  var time =
+    today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  console.log("time", time);
+  console.log("score", score);
+  listPlayer = [...listPlayer, { time: time, score: score }];
+  console.log("listPlayer", listPlayer);
 }
 
 function resetGame() {
+  gameStart();
   score = 0;
   xVelocity = unitSize;
   yVelocity = 0;
 
   snake = [
+    { x: unitSize * 5, y: 0 },
     { x: unitSize * 4, y: 0 },
     { x: unitSize * 3, y: 0 },
     { x: unitSize * 2, y: 0 },
     { x: unitSize, y: 0 },
     { x: 0, y: 0 },
   ];
-  gameStart();
+  chooseDirection = undefined;
 }
 
-
-btnVolume.onclick = function () {
-  if (btnVolume.textContent.includes("volume_off")) {
-    audio.loop = true;
-    audio.play();
-    btnVolume.textContent = "volume_up";
-  } else {
-    audio.pause();
-    btnVolume.textContent = "volume_off";
-  }
-};
-
-
-btnBackGame.onclick = function () {
-  rankingGame.classList.remove("active");
-};
-
-btnRanking.onclick = function () {
-  rankingGame.classList.add("active");
-};
