@@ -12,6 +12,10 @@ body {
   background-color: #84cc16;
 }
 
+ul {
+  list-style-type: none;
+}
+
 #container {
   display: flex;
   flex-direction: column;
@@ -44,8 +48,8 @@ body {
   cursor: pointer;
 }
 
-
-#button__help,
+#volume,
+#button__ranking,
 #button__reset,
 #button__pause {
   padding: 4px;
@@ -56,8 +60,8 @@ body {
   font-size: 42px;
 }
 
-
-#button__help:hover,
+#volume:hover,
+#button__ranking:hover,
 #button__reset:hover,
 #button__pause:hover {
   transition: 0.4s ease-out;
@@ -424,6 +428,93 @@ body {
   transition: all 0.3s;
 }
 
+#rankingGame {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Balsamiq Sans", cursive;
+  color: white;
+  display: none;
+}
+
+#rankingGame.active {
+  display: flex;
+}
+
+#container__rankingGame {
+  height: 100%;
+  width: 82%;
+  background-color: #713f12;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title__rankingGame {
+  margin-top: 40px;
+  margin-bottom: 40px;
+  font-size: 40px;
+}
+
+.list__rankingGame {
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 60%;
+}
+
+.list__rankingGame::-webkit-scrollbar {
+  width: 6px;
+}
+
+.list__rankingGame::-webkit-scrollbar-thumb {
+  background-color: #645f6c;
+  border-radius: 10px;
+}
+
+
+.item__rankingGame {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+.backGame__rankingGame {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+#btnBackGame {
+  font-family: "Open Sans", sans-serif;
+  font-size: 20px;
+  letter-spacing: 2px;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: #000;
+  cursor: pointer;
+  border: 3px solid;
+  padding: 10px 20px;
+  box-shadow: 1px 1px 0px 0px, 2px 2px 0px 0px, 3px 3px 0px 0px, 4px 4px 0px 0px, 5px 5px 0px 0px;
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  margin-right: 20px;
+}
+
+#btnBackGame:active {
+  box-shadow: 0px 0px 0px 0px;
+  top: 5px;
+  left: 5px;
+}
+
 @media (max-width: 1047px) {
   .wrapper__speed,
   .wrapper__mode {
@@ -488,3 +579,8 @@ body {
   border-radius: 15px;
   cursor: pointer;
 }
+
+
+
+/* CSS */
+
