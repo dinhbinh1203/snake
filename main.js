@@ -16,14 +16,28 @@ const rankingGame = document.getElementById("rankingGame");
 const btnVolume = document.getElementById("volume");
 const buttonMoves = document.querySelectorAll(".button__move");
 
-const unitSize = 20;
+const sizeSnakes = 20;
 const tools = document.getElementById("tools");
-const valueWidth = Math.floor((screen.width * 0.8) / unitSize) * unitSize;
-const valueHeight = Math.floor((screen.height * 0.6) / unitSize) * unitSize;
+// const valueWidth = Math.floor((screen.width * 0.8) / sizeSnakes) * sizeSnakes;
+// const valueHeight = Math.floor((screen.height * 0.6) / sizeSnakes) * sizeSnakes;
 
+let screenWidth = document.body.clientWidth;
+let screenHeight = screen.height;
+let valueWidth = Math.floor((screenWidth * 0.8) / sizeSnakes) * sizeSnakes;
+let valueHeight = Math.floor((screenHeight * 0.6) / sizeSnakes) * sizeSnakes;
 tools.style.width = `${valueWidth}px`;
 gameBoard.width = `${valueWidth}`;
 gameBoard.height = `${valueHeight}`;
+
+window.addEventListener("resize", (event) => {
+  screenWidth = event.currentTarget.innerWidth;
+  screenWidth = event.currentTarget.innerHeight;
+  valueWidth = Math.floor((screenWidth * 0.8) / sizeSnakes) * sizeSnakes;
+  valueHeight = Math.floor((screenHeight * 0.6) / sizeSnakes) * sizeSnakes;
+  tools.style.width = `${valueWidth}px`;
+  gameBoard.width = `${valueWidth}`;
+  gameBoard.height = `${valueHeight}`;
+});
 
 const gameWidth = gameBoard.width;
 const gameHeight = gameBoard.height;
@@ -33,23 +47,40 @@ const snakeBorder = "black";
 const foodColor = "red";
 
 var running = false;
-var xVelocity = unitSize;
+var xVelocity = sizeSnakes;
 var yVelocity = 0;
 var foodX;
 var foodY;
 var score = 0;
 var snake = [
-  { x: unitSize * 5, y: 0 },
-  { x: unitSize * 4, y: 0 },
-  { x: unitSize * 3, y: 0 },
-  { x: unitSize * 2, y: 0 },
-  { x: unitSize, y: 0 },
+  { x: sizeSnakes * 5, y: 0 },
+  { x: sizeSnakes * 4, y: 0 },
+  { x: sizeSnakes * 3, y: 0 },
+  { x: sizeSnakes * 2, y: 0 },
+  { x: sizeSnakes, y: 0 },
   { x: 0, y: 0 },
 ];
 var speed;
 var chooseDirection;
 
 var audio = new Audio("assets/music.mp3");
+
+const countNumber = document.getElementById("countNumber");
+function changeCountNumber() {
+  let number = 3;
+  countNumber.textContent = null;
+  setInterval(() => {
+    if (number > 0) {
+      countNumber.textContent = number;
+      number = number - 1;
+      countNumber.classList.add("active");
+    }
+  }, 1000);
+  setTimeout(() => {
+    countNumber.classList.remove("active");
+  }, 4000);
+}
+
 // On Off Volumn
 btnVolume.onclick = function () {
   if (btnVolume.textContent.includes("volume_off")) {
@@ -97,6 +128,8 @@ btnReset.onclick = function () {
 // On off container continueGame
 btnContinueGame.onclick = function () {
   continueGame.classList.remove("active");
+  countNumber.classList.add("active");
+  changeCountNumber();
 };
 
 btnPause.onclick = function () {
@@ -108,7 +141,6 @@ window.addEventListener("click", changeDirectionWithButton);
 
 function gameStart() {
   running = true;
-  scoreText.textContent = score;
   createFood();
   drawFood();
   nextTick();
@@ -151,19 +183,22 @@ function clearGame() {
 function createFood() {
   function randomFood(min, max) {
     const randNum =
-      Math.round((Math.random() * (max - min) + min) / unitSize) * unitSize;
+      Math.round((Math.random() * (max - min) + min) / sizeSnakes) * sizeSnakes;
     return randNum;
   }
-  foodX = randomFood(0, gameWidth - unitSize);
-  foodY = randomFood(0, gameHeight - unitSize);
+  foodX = randomFood(0, gameWidth - sizeSnakes);
+  foodY = randomFood(0, gameHeight - sizeSnakes);
 }
 function drawFood() {
   context.fillStyle = foodColor;
-  context.fillRect(foodX, foodY, unitSize, unitSize);
+  context.fillRect(foodX, foodY, sizeSnakes, sizeSnakes);
 }
 
 function moveSnake() {
-  if (!continueGame.classList.value.includes("active")) {
+  if (
+    !continueGame.classList.value.includes("active") &&
+    !countNumber.classList.value.includes("active")
+  ) {
     let checkMode;
     chooseModes.forEach((chooseMode, index) => {
       if (chooseMode.classList.value.includes("active")) {
@@ -173,24 +208,25 @@ function moveSnake() {
 
     let head = { x: snake[0].x + xVelocity, y: snake[0].y + yVelocity };
     if (checkMode === 1) {
+      console.log("snake[0].x", snake[0].x);
       switch (true) {
         case snake[0].x >= gameWidth:
-          xVelocity = unitSize;
+          xVelocity = sizeSnakes;
           yVelocity = 0;
-          head = { x: 0 + xVelocity - unitSize, y: snake[0].y + yVelocity };
+          head = { x: xVelocity - sizeSnakes, y: snake[0].y + yVelocity };
           break;
+        //true
         case snake[0].x < 0:
-          xVelocity = -unitSize;
+          xVelocity = -sizeSnakes;
           head = { x: gameWidth + xVelocity, y: snake[0].y + yVelocity };
           break;
-        case snake[0].y > gameHeight:
-          xVelocity = 0;
-          yVelocity = unitSize;
-          head = { x: snake[0].x + xVelocity, y: 0 + yVelocity - unitSize };
+        case snake[0].y >= gameHeight:
+          yVelocity = sizeSnakes;
+          head = { x: snake[0].x + xVelocity, y: yVelocity - sizeSnakes };
           break;
         case snake[0].y < 0:
           xVelocity = 0;
-          yVelocity = -unitSize;
+          yVelocity = -sizeSnakes;
           head = { x: snake[0].x + xVelocity, y: gameHeight + yVelocity };
           break;
       }
@@ -210,7 +246,7 @@ function moveSnake() {
 function drawSnake() {
   context.fillStyle = snakeColor;
   snake.forEach((snakePart) => {
-    context.fillRect(snakePart.x, snakePart.y, unitSize, unitSize);
+    context.fillRect(snakePart.x, snakePart.y, sizeSnakes, sizeSnakes);
   });
 }
 
@@ -221,54 +257,54 @@ function changeDirectionWithKeyCode(event) {
   const RIGHT = 39;
   const DOWN = 40;
 
-  // check if snake direction top and press dow not game over
-  const goingUp = yVelocity == -unitSize;
-  const goingDown = yVelocity == unitSize;
-  const goingRight = xVelocity == unitSize;
-  const goingLeft = xVelocity == -unitSize;
+  // check if snake direction top and press down not game over
+  const goingUp = yVelocity == -sizeSnakes;
+  const goingDown = yVelocity == sizeSnakes;
+  const goingRight = xVelocity == sizeSnakes;
+  const goingLeft = xVelocity == -sizeSnakes;
   switch (true) {
     case keyPressed == LEFT && !goingRight:
-      xVelocity = -unitSize;
+      xVelocity = -sizeSnakes;
       yVelocity = 0;
       break;
     case keyPressed == UP && !goingDown:
       xVelocity = 0;
-      yVelocity = -unitSize;
+      yVelocity = -sizeSnakes;
       break;
     case keyPressed == RIGHT && !goingLeft:
-      xVelocity = unitSize;
+      xVelocity = sizeSnakes;
       yVelocity = 0;
       break;
     case keyPressed == DOWN && !goingUp:
       xVelocity = 0;
-      yVelocity = unitSize;
+      yVelocity = sizeSnakes;
       break;
   }
 }
 
 // changeDirectionWithButton(
 function changeDirectionWithButton(event) {
-  const goingUp = yVelocity == -unitSize;
-  const goingDown = yVelocity == unitSize;
-  const goingRight = xVelocity == unitSize;
-  const goingLeft = xVelocity == -unitSize;
+  const goingUp = yVelocity == -sizeSnakes;
+  const goingDown = yVelocity == sizeSnakes;
+  const goingRight = xVelocity == sizeSnakes;
+  const goingLeft = xVelocity == -sizeSnakes;
 
   switch (true) {
     case chooseDirection == 1 && !goingRight:
-      xVelocity = -unitSize;
+      xVelocity = -sizeSnakes;
       yVelocity = 0;
       break;
     case chooseDirection == 0 && !goingDown:
       xVelocity = 0;
-      yVelocity = -unitSize;
+      yVelocity = -sizeSnakes;
       break;
     case chooseDirection == 3 && !goingLeft:
-      xVelocity = unitSize;
+      xVelocity = sizeSnakes;
       yVelocity = 0;
       break;
     case chooseDirection == 2 && !goingUp:
       xVelocity = 0;
-      yVelocity = unitSize;
+      yVelocity = sizeSnakes;
       break;
   }
 }
@@ -320,16 +356,22 @@ function displayGameOver() {
 function resetGame() {
   gameStart();
   score = 0;
-  xVelocity = unitSize;
+  scoreText.textContent = 0;
+  xVelocity = sizeSnakes;
   yVelocity = 0;
-
   snake = [
-    { x: unitSize * 5, y: 0 },
-    { x: unitSize * 4, y: 0 },
-    { x: unitSize * 3, y: 0 },
-    { x: unitSize * 2, y: 0 },
-    { x: unitSize, y: 0 },
+    { x: sizeSnakes * 5, y: 0 },
+    { x: sizeSnakes * 4, y: 0 },
+    { x: sizeSnakes * 3, y: 0 },
+    { x: sizeSnakes * 2, y: 0 },
+    { x: sizeSnakes, y: 0 },
     { x: 0, y: 0 },
   ];
   chooseDirection = undefined;
 }
+
+// ctx.font = "50px MV Boli";
+// ctx.fillStyle = "black";
+// ctx.textAlign = "center";
+// ctx.fillText("GAME OVER!", gameWidth / 2, gameHeight / 2);
+// running = false;
