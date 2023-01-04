@@ -67,8 +67,8 @@ var audio = new Audio("assets/music.mp3");
 
 const countNumber = document.getElementById("countNumber");
 function changeCountNumber() {
-  let number = 3;
-  countNumber.textContent = null;
+  let number = 2;
+  countNumber.textContent = 3;
   setInterval(() => {
     if (number > 0) {
       countNumber.textContent = number;
@@ -78,7 +78,7 @@ function changeCountNumber() {
   }, 1000);
   setTimeout(() => {
     countNumber.classList.remove("active");
-  }, 4000);
+  }, 3000);
 }
 
 // On Off Volumn
@@ -122,6 +122,7 @@ btnStart.onclick = function () {
 };
 
 btnReset.onclick = function () {
+  running = false;
   startGame.classList.add("active");
 };
 
@@ -161,15 +162,36 @@ function nextTick() {
     }
   });
 
+  // if (running) {
+  //   setTimeout(() => {
+  //     clearGame();
+  //     drawFood();
+  //     moveSnake();
+  //     drawSnake();
+  //     checkGameOver();
+  //     nextTick();
+  //   }, speed);
+  // } else {
+  //   if (!startGame.classList.value.includes("active")) {
+  //     displayGameOver();
+  //   }
+  // }
+
+  function timeoutHandler() {
+    clearGame();
+    drawFood();
+    moveSnake();
+    drawSnake();
+    checkGameOver();
+    nextTick();
+  }
+
+  function changeToRAF() {
+    window.requestAnimationFrame(timeoutHandler);
+  }
+
   if (running) {
-    setTimeout(() => {
-      clearGame();
-      drawFood();
-      moveSnake();
-      drawSnake();
-      checkGameOver();
-      nextTick();
-    }, speed);
+    setTimeout(changeToRAF, speed);
   } else {
     if (!startGame.classList.value.includes("active")) {
       displayGameOver();
@@ -208,7 +230,6 @@ function moveSnake() {
 
     let head = { x: snake[0].x + xVelocity, y: snake[0].y + yVelocity };
     if (checkMode === 1) {
-      console.log("snake[0].x", snake[0].x);
       switch (true) {
         case snake[0].x >= gameWidth:
           xVelocity = sizeSnakes;
