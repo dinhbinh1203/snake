@@ -262,24 +262,111 @@ function changeDirectionWithKeyCode(event) {
   const goingDown = yVelocity == sizeSnakes;
   const goingRight = xVelocity == sizeSnakes;
   const goingLeft = xVelocity == -sizeSnakes;
+
   switch (true) {
     case keyPressed == LEFT && !goingRight:
-      xVelocity = -sizeSnakes;
-      yVelocity = 0;
+      if (
+        snake[0].x == 0 ||
+        snake[0].x < 0 ||
+        snake[0].x >= gameWidth ||
+        snake[0].y == 0 ||
+        snake[0].y < 0 ||
+        snake[0].y >= gameHeight
+      ) {
+        setTimeout(() => {
+          xVelocity = -sizeSnakes;
+          yVelocity = 0;
+        }, speed + 50);
+      } else {
+        xVelocity = -sizeSnakes;
+        yVelocity = 0;
+      }
       break;
+    // xVelocity = -sizeSnakes;
+    // yVelocity = 0;
+
     case keyPressed == UP && !goingDown:
-      xVelocity = 0;
-      yVelocity = -sizeSnakes;
+      if (
+        snake[0].x == 0 ||
+        snake[0].x < 0 ||
+        snake[0].x >= gameWidth ||
+        snake[0].y == 0 ||
+        snake[0].y < 0 ||
+        snake[0].y >= gameHeight
+      ) {
+        setTimeout(() => {
+          xVelocity = 0;
+          yVelocity = -sizeSnakes;
+        }, speed + 50);
+      } else {
+        xVelocity = 0;
+        yVelocity = -sizeSnakes;
+      }
+
+      // xVelocity = 0;
+      // yVelocity = -sizeSnakes;
       break;
     case keyPressed == RIGHT && !goingLeft:
-      xVelocity = sizeSnakes;
-      yVelocity = 0;
+      if (
+        snake[0].x == 0 ||
+        snake[0].x < 0 ||
+        snake[0].x >= gameWidth ||
+        snake[0].y == 0 ||
+        snake[0].y < 0 ||
+        snake[0].y >= gameHeight
+      ) {
+        setTimeout(() => {
+          xVelocity = sizeSnakes;
+          yVelocity = 0;
+        }, speed + 50);
+      } else {
+        xVelocity = sizeSnakes;
+        yVelocity = 0;
+      }
+      // xVelocity = sizeSnakes;
+      // yVelocity = 0;
       break;
     case keyPressed == DOWN && !goingUp:
-      xVelocity = 0;
-      yVelocity = sizeSnakes;
+      if (
+        snake[0].x == 0 ||
+        snake[0].x < 0 ||
+        snake[0].x >= gameWidth ||
+        snake[0].y == 0 ||
+        snake[0].y < 0 ||
+        snake[0].y >= gameHeight
+      ) {
+        setTimeout(() => {
+          xVelocity = 0;
+          yVelocity = sizeSnakes;
+        }, speed + 50);
+      } else {
+        xVelocity = 0;
+        yVelocity = sizeSnakes;
+      }
       break;
+    // xVelocity = 0;
+    // yVelocity = sizeSnakes;
+    // break;
   }
+
+  // switch (true) {
+  //   case keyPressed == LEFT && !goingRight:
+  //     xVelocity = -sizeSnakes;
+  //     yVelocity = 0;
+  //     break;
+  //   case keyPressed == UP && !goingDown:
+  //     xVelocity = 0;
+  //     yVelocity = -sizeSnakes;
+  //     break;
+  //   case keyPressed == RIGHT && !goingLeft:
+  //     xVelocity = sizeSnakes;
+  //     yVelocity = 0;
+  //     break;
+  //   case keyPressed == DOWN && !goingUp:
+  //     xVelocity = 0;
+  //     yVelocity = sizeSnakes;
+  //     break;
+  // }
 }
 
 // changeDirectionWithButton(
@@ -291,21 +378,90 @@ function changeDirectionWithButton(event) {
 
   switch (true) {
     case chooseDirection == 1 && !goingRight:
-      xVelocity = -sizeSnakes;
-      yVelocity = 0;
+      if (
+        snake[0].x == 0 ||
+        snake[0].x < 0 ||
+        snake[0].x >= gameWidth ||
+        snake[0].y == 0 ||
+        snake[0].y < 0 ||
+        snake[0].y >= gameHeight
+      ) {
+        setTimeout(() => {
+          xVelocity = -sizeSnakes;
+          yVelocity = 0;
+        }, speed + 50);
+      } else {
+        xVelocity = -sizeSnakes;
+        yVelocity = 0;
+      }
       break;
+    // xVelocity = -sizeSnakes;
+    // yVelocity = 0;
+    // break;
     case chooseDirection == 0 && !goingDown:
-      xVelocity = 0;
-      yVelocity = -sizeSnakes;
+      if (
+        snake[0].x == 0 ||
+        snake[0].x < 0 ||
+        snake[0].x >= gameWidth ||
+        snake[0].y == 0 ||
+        snake[0].y < 0 ||
+        snake[0].y >= gameHeight
+      ) {
+        setTimeout(() => {
+          xVelocity = 0;
+          yVelocity = -sizeSnakes;
+        }, speed + 50);
+      } else {
+        xVelocity = 0;
+        yVelocity = -sizeSnakes;
+      }
       break;
+    // xVelocity = 0;
+    // yVelocity = -sizeSnakes;
+    // break;
     case chooseDirection == 3 && !goingLeft:
-      xVelocity = sizeSnakes;
-      yVelocity = 0;
+      if (
+        snake[0].x == 0 ||
+        snake[0].x < 0 ||
+        snake[0].x >= gameWidth ||
+        snake[0].y == 0 ||
+        snake[0].y < 0 ||
+        snake[0].y >= gameHeight
+      ) {
+        setTimeout(() => {
+          xVelocity = sizeSnakes;
+          yVelocity = 0;
+        }, speed + 50);
+      } else {
+        xVelocity = sizeSnakes;
+        yVelocity = 0;
+      }
       break;
+    // xVelocity = sizeSnakes;
+    // yVelocity = 0;
+    // break;
     case chooseDirection == 2 && !goingUp:
-      xVelocity = 0;
-      yVelocity = sizeSnakes;
+      if (
+        snake[0].x == 0 ||
+        snake[0].x < 0 ||
+        snake[0].x >= gameWidth ||
+        snake[0].y == 0 ||
+        snake[0].y < 0 ||
+        snake[0].y >= gameHeight
+      ) {
+        setTimeout(() => {
+          xVelocity = 0;
+          yVelocity = sizeSnakes;
+        }, speed + 50);
+      } else {
+        xVelocity = 0;
+        yVelocity = sizeSnakes;
+      }
       break;
+
+    // xVelocity = 0;
+    // yVelocity = sizeSnakes;
+    // break;
   }
 }
 
