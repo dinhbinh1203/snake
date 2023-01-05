@@ -15,37 +15,9 @@ const scoreText = document.querySelector("#scoreText");
 const rankingGame = document.getElementById("rankingGame");
 const btnVolume = document.getElementById("volume");
 const buttonMoves = document.querySelectorAll(".button__move");
-
 const sizeSnakes = 20;
 const tools = document.getElementById("tools");
-// const valueWidth = Math.floor((screen.width * 0.8) / sizeSnakes) * sizeSnakes;
-// const valueHeight = Math.floor((screen.height * 0.6) / sizeSnakes) * sizeSnakes;
-
-let screenWidth = document.body.clientWidth;
-let screenHeight = screen.height;
-let valueWidth = Math.floor((screenWidth * 0.8) / sizeSnakes) * sizeSnakes;
-let valueHeight = Math.floor((screenHeight * 0.6) / sizeSnakes) * sizeSnakes;
-tools.style.width = `${valueWidth}px`;
-gameBoard.width = `${valueWidth}`;
-gameBoard.height = `${valueHeight}`;
-
-window.addEventListener("resize", (event) => {
-  screenWidth = event.currentTarget.innerWidth;
-  screenWidth = event.currentTarget.innerHeight;
-  valueWidth = Math.floor((screenWidth * 0.8) / sizeSnakes) * sizeSnakes;
-  valueHeight = Math.floor((screenHeight * 0.6) / sizeSnakes) * sizeSnakes;
-  tools.style.width = `${valueWidth}px`;
-  gameBoard.width = `${valueWidth}`;
-  gameBoard.height = `${valueHeight}`;
-});
-
-const gameWidth = gameBoard.width;
-const gameHeight = gameBoard.height;
-const boardBackground = "pink";
-const snakeColor = "#92400e";
-const snakeBorder = "black";
-const foodColor = "red";
-
+var head;
 var running = false;
 var xVelocity = sizeSnakes;
 var yVelocity = 0;
@@ -62,10 +34,36 @@ var snake = [
 ];
 var speed;
 var chooseDirection;
-
+const gameWidth = gameBoard.width;
+const gameHeight = gameBoard.height;
+const boardBackground = "pink";
+const snakeColor = "#92400e";
+const snakeBorder = "black";
+const foodColor = "red";
 var audio = new Audio("assets/music.mp3");
+// check là biến kiểm tra có bấm liên tục 2 nút không
+var check;
 
 const countNumber = document.getElementById("countNumber");
+var screenWidth = document.body.clientWidth;
+var screenHeight = screen.height;
+var valueWidth = Math.floor((screenWidth * 0.8) / sizeSnakes) * sizeSnakes;
+var valueHeight = Math.floor((screenHeight * 0.6) / sizeSnakes) * sizeSnakes;
+tools.style.width = `${valueWidth}px`;
+gameBoard.width = `${valueWidth}`;
+gameBoard.height = `${valueHeight}`;
+
+window.addEventListener("resize", (event) => {
+  screenWidth = event.currentTarget.innerWidth;
+  screenWidth = event.currentTarget.innerHeight;
+  valueWidth = Math.floor((screenWidth * 0.8) / sizeSnakes) * sizeSnakes;
+  valueHeight = Math.floor((screenHeight * 0.6) / sizeSnakes) * sizeSnakes;
+  tools.style.width = `${valueWidth}px`;
+  gameBoard.width = `${valueWidth}`;
+  gameBoard.height = `${valueHeight}`;
+});
+
+// Run time after click continue
 function changeCountNumber() {
   let number = 2;
   countNumber.textContent = 3;
@@ -81,7 +79,7 @@ function changeCountNumber() {
   }, 3000);
 }
 
-// On Off Volumn
+// On Off Volume
 btnVolume.onclick = function () {
   if (btnVolume.textContent.includes("volume_off")) {
     audio.loop = true;
@@ -140,6 +138,7 @@ btnPause.onclick = function () {
 window.addEventListener("keydown", changeDirectionWithKeyCode);
 window.addEventListener("click", changeDirectionWithButton);
 
+// Start game
 function gameStart() {
   running = true;
   createFood();
@@ -162,21 +161,6 @@ function nextTick() {
     }
   });
 
-  // if (running) {
-  //   setTimeout(() => {
-  //     clearGame();
-  //     drawFood();
-  //     moveSnake();
-  //     drawSnake();
-  //     checkGameOver();
-  //     nextTick();
-  //   }, speed);
-  // } else {
-  //   if (!startGame.classList.value.includes("active")) {
-  //     displayGameOver();
-  //   }
-  // }
-
   function timeoutHandler() {
     clearGame();
     drawFood();
@@ -198,11 +182,16 @@ function nextTick() {
     }
   }
 }
+
+// reset game
 function clearGame() {
   context.fillStyle = boardBackground;
   context.fillRect(0, 0, gameWidth, gameHeight);
 }
+
+// create food
 function createFood() {
+  // random location food
   function randomFood(min, max) {
     const randNum =
       Math.round((Math.random() * (max - min) + min) / sizeSnakes) * sizeSnakes;
@@ -216,7 +205,11 @@ function drawFood() {
   context.fillRect(foodX, foodY, sizeSnakes, sizeSnakes);
 }
 
+// move snake
 function moveSnake() {
+  // rắn di chuyển thì check = false
+  check = false;
+
   if (
     !continueGame.classList.value.includes("active") &&
     !countNumber.classList.value.includes("active")
@@ -228,7 +221,7 @@ function moveSnake() {
       }
     });
 
-    let head = { x: snake[0].x + xVelocity, y: snake[0].y + yVelocity };
+    head = { x: snake[0].x + xVelocity, y: snake[0].y + yVelocity };
     if (checkMode === 1) {
       switch (true) {
         case snake[0].x >= gameWidth:
@@ -279,6 +272,9 @@ function changeDirectionWithKeyCode(event) {
   const DOWN = 40;
 
   // check if snake direction top and press down not game over
+  // check if snake direction left and press right not game over
+  // check if snake direction down and press up not game over
+  // check if snake direction right and press left not game over
   const goingUp = yVelocity == -sizeSnakes;
   const goingDown = yVelocity == sizeSnakes;
   const goingRight = xVelocity == sizeSnakes;
@@ -299,12 +295,19 @@ function changeDirectionWithKeyCode(event) {
           yVelocity = 0;
         }, speed + 50);
       } else {
-        xVelocity = -sizeSnakes;
-        yVelocity = 0;
+        // nếu có bấm 2 nút liên tục thì đợi hành động bấm của nút thứ nhất thực hiện thì thực hiện hành động nút thứ 2
+        if (check) {
+          setTimeout(() => {
+            xVelocity = -sizeSnakes;
+            yVelocity = 0;
+          }, speed);
+        } else {
+          xVelocity = -sizeSnakes;
+          yVelocity = 0;
+        }
       }
+      check = true;
       break;
-    // xVelocity = -sizeSnakes;
-    // yVelocity = 0;
 
     case keyPressed == UP && !goingDown:
       if (
@@ -320,12 +323,18 @@ function changeDirectionWithKeyCode(event) {
           yVelocity = -sizeSnakes;
         }, speed + 50);
       } else {
-        xVelocity = 0;
-        yVelocity = -sizeSnakes;
+        // nếu có bấm 2 nút liên tục thì đợi hành động bấm của nút thứ nhất thực hiện thì thực hiện hành động nút thứ 2
+        if (check) {
+          setTimeout(() => {
+            xVelocity = 0;
+            yVelocity = -sizeSnakes;
+          }, speed);
+        } else {
+          xVelocity = 0;
+          yVelocity = -sizeSnakes;
+        }
       }
 
-      // xVelocity = 0;
-      // yVelocity = -sizeSnakes;
       break;
     case keyPressed == RIGHT && !goingLeft:
       if (
@@ -341,11 +350,18 @@ function changeDirectionWithKeyCode(event) {
           yVelocity = 0;
         }, speed + 50);
       } else {
-        xVelocity = sizeSnakes;
-        yVelocity = 0;
+        // nếu có bấm 2 nút liên tục thì đợi hành động bấm của nút thứ nhất thực hiện thì thực hiện hành động nút thứ 2
+        if (check) {
+          setTimeout(() => {
+            xVelocity = sizeSnakes;
+            yVelocity = 0;
+          }, speed);
+        } else {
+          xVelocity = sizeSnakes;
+          yVelocity = 0;
+        }
       }
-      // xVelocity = sizeSnakes;
-      // yVelocity = 0;
+      check = true;
       break;
     case keyPressed == DOWN && !goingUp:
       if (
@@ -361,37 +377,28 @@ function changeDirectionWithKeyCode(event) {
           yVelocity = sizeSnakes;
         }, speed + 50);
       } else {
-        xVelocity = 0;
-        yVelocity = sizeSnakes;
+        // nếu có bấm 2 nút liên tục thì đợi hành động bấm của nút thứ nhất thực hiện thì thực hiện hành động nút thứ 2
+        if (check) {
+          setTimeout(() => {
+            xVelocity = 0;
+            yVelocity = sizeSnakes;
+          }, speed);
+        } else {
+          xVelocity = 0;
+          yVelocity = sizeSnakes;
+        }
       }
+      check = true;
       break;
-    // xVelocity = 0;
-    // yVelocity = sizeSnakes;
-    // break;
   }
-
-  // switch (true) {
-  //   case keyPressed == LEFT && !goingRight:
-  //     xVelocity = -sizeSnakes;
-  //     yVelocity = 0;
-  //     break;
-  //   case keyPressed == UP && !goingDown:
-  //     xVelocity = 0;
-  //     yVelocity = -sizeSnakes;
-  //     break;
-  //   case keyPressed == RIGHT && !goingLeft:
-  //     xVelocity = sizeSnakes;
-  //     yVelocity = 0;
-  //     break;
-  //   case keyPressed == DOWN && !goingUp:
-  //     xVelocity = 0;
-  //     yVelocity = sizeSnakes;
-  //     break;
-  // }
 }
 
-// changeDirectionWithButton(
+// changeDirectionWithButtonScreen
 function changeDirectionWithButton(event) {
+  // check if snake direction top and press down not game over
+  // check if snake direction left and press right not game over
+  // check if snake direction down and press up not game over
+  // check if snake direction right and press left not game over
   const goingUp = yVelocity == -sizeSnakes;
   const goingDown = yVelocity == sizeSnakes;
   const goingRight = xVelocity == sizeSnakes;
@@ -412,13 +419,19 @@ function changeDirectionWithButton(event) {
           yVelocity = 0;
         }, speed + 50);
       } else {
-        xVelocity = -sizeSnakes;
-        yVelocity = 0;
+        // nếu có bấm 2 nút liên tục thì đợi hành động bấm của nút thứ nhất thực hiện thì thực hiện hành động nút thứ 2
+        if (check) {
+          setTimeout(() => {
+            xVelocity = -sizeSnakes;
+            yVelocity = 0;
+          }, speed);
+        } else {
+          xVelocity = -sizeSnakes;
+          yVelocity = 0;
+        }
       }
+      check = true;
       break;
-    // xVelocity = -sizeSnakes;
-    // yVelocity = 0;
-    // break;
     case chooseDirection == 0 && !goingDown:
       if (
         snake[0].x == 0 ||
@@ -433,13 +446,19 @@ function changeDirectionWithButton(event) {
           yVelocity = -sizeSnakes;
         }, speed + 50);
       } else {
-        xVelocity = 0;
-        yVelocity = -sizeSnakes;
+        // nếu có bấm 2 nút liên tục thì đợi hành động bấm của nút thứ nhất thực hiện thì thực hiện hành động nút thứ 2
+        if (check) {
+          setTimeout(() => {
+            xVelocity = 0;
+            yVelocity = -sizeSnakes;
+          }, speed);
+        } else {
+          xVelocity = 0;
+          yVelocity = -sizeSnakes;
+        }
       }
+      check = true;
       break;
-    // xVelocity = 0;
-    // yVelocity = -sizeSnakes;
-    // break;
     case chooseDirection == 3 && !goingLeft:
       if (
         snake[0].x == 0 ||
@@ -454,13 +473,19 @@ function changeDirectionWithButton(event) {
           yVelocity = 0;
         }, speed + 50);
       } else {
-        xVelocity = sizeSnakes;
-        yVelocity = 0;
+        // nếu có bấm 2 nút liên tục thì đợi hành động bấm của nút thứ nhất thực hiện thì thực hiện hành động nút thứ 2
+        if (check) {
+          setTimeout(() => {
+            xVelocity = sizeSnakes;
+            yVelocity = 0;
+          }, speed);
+        } else {
+          xVelocity = sizeSnakes;
+          yVelocity = 0;
+        }
       }
+      check = true;
       break;
-    // xVelocity = sizeSnakes;
-    // yVelocity = 0;
-    // break;
     case chooseDirection == 2 && !goingUp:
       if (
         snake[0].x == 0 ||
@@ -475,14 +500,19 @@ function changeDirectionWithButton(event) {
           yVelocity = sizeSnakes;
         }, speed + 50);
       } else {
-        xVelocity = 0;
-        yVelocity = sizeSnakes;
+        // nếu có bấm 2 nút liên tục thì đợi hành động bấm của nút thứ nhất thực hiện thì thực hiện hành động nút thứ 2
+        if (check) {
+          setTimeout(() => {
+            xVelocity = 0;
+            yVelocity = sizeSnakes;
+          }, speed);
+        } else {
+          xVelocity = 0;
+          yVelocity = sizeSnakes;
+        }
       }
+      check = true;
       break;
-
-    // xVelocity = 0;
-    // yVelocity = sizeSnakes;
-    // break;
   }
 }
 
@@ -521,6 +551,7 @@ function checkGameOver() {
   }
 }
 
+// Game over
 function displayGameOver() {
   lostGame.classList.add("active");
   lostGameScore.textContent = scoreText.textContent;
@@ -530,6 +561,7 @@ function displayGameOver() {
   };
 }
 
+// Reset game
 function resetGame() {
   gameStart();
   score = 0;
@@ -546,9 +578,3 @@ function resetGame() {
   ];
   chooseDirection = undefined;
 }
-
-// ctx.font = "50px MV Boli";
-// ctx.fillStyle = "black";
-// ctx.textAlign = "center";
-// ctx.fillText("GAME OVER!", gameWidth / 2, gameHeight / 2);
-// running = false;
