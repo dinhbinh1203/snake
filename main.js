@@ -66,6 +66,11 @@ class Snake {
 
   moveSnake() {
     this.check = false;
+    if (!this.running && !startGame.classList.value.includes("active")) {
+      lostGame.classList.add("active");
+      lostGameScore.textContent = scoreText.textContent;
+    }
+
     if (
       !continueGame.classList.value.includes("active") &&
       !countNumber.classList.value.includes("active")
@@ -91,7 +96,6 @@ class Snake {
               y: this.body[0].y + this.yVelocity,
             };
             break;
-          //true
           case this.body[0].x < 0:
             this.xVelocity = -sizeSnakes;
             head = {
@@ -159,9 +163,6 @@ class Game {
   }
 
   checkGameOver() {
-    console.log("gameWidth", gameWidth);
-    console.log("gameHeight", gameHeight);
-
     let checkMode;
     chooseModes.forEach((chooseMode, index) => {
       if (chooseMode.classList.value.includes("active")) {
@@ -199,6 +200,15 @@ class Game {
     }
   }
 
+  animation() {
+    this.clearGame();
+    this.drawFood();
+    this.snake.moveSnake();
+    this.drawSnake();
+    this.checkGameOver();
+    this.nextTick();
+  }
+
   nextTick() {
     chooseSpeeds.forEach((chooseSpeed, index) => {
       if (chooseSpeed.classList.value.includes("active")) {
@@ -206,28 +216,13 @@ class Game {
           this.snake.speed = 300;
         }
         if (index === 1) {
-          this.snake.speed = 150;
+          this.snake.speed = 200;
         }
         if (index === 2) {
           this.snake.speed = 50;
         }
       }
     });
-
-    if (this.snake.running) {
-      setTimeout(() => {
-        this.clearGame();
-        this.drawFood();
-        this.snake.moveSnake();
-        this.drawSnake();
-        this.checkGameOver();
-        this.nextTick();
-      }, this.snake.speed);
-    } else {
-      if (!startGame.classList.value.includes("active")) {
-        this.displayGameOver();
-      }
-    }
   }
 
   gameStart() {
@@ -252,11 +247,6 @@ class Game {
       { x: 0, y: 0 },
     ];
     this.snake.chooseDirection = undefined;
-  }
-
-  displayGameOver() {
-    lostGame.classList.add("active");
-    lostGameScore.textContent = scoreText.textContent;
   }
 }
 
@@ -537,7 +527,7 @@ function changeCountNumber() {
   }, 3000);
 }
 
-// On Off Volumn
+// On Off Volume
 btnVolume.onclick = function () {
   if (btnVolume.textContent.includes("volume_off")) {
     audio.loop = true;
@@ -571,10 +561,31 @@ chooseSpeeds.forEach((chooseSpeed, index) => {
   };
 });
 
+var fpsInterval, now, then, timeElapsed;
+
 // On off container startGame
 btnStart.onclick = function () {
   startGame.classList.remove("active");
   game.resetGame();
+
+  if (game.snake.running) {
+    startAnimating(game.snake.speed);
+    function startAnimating(fps) {
+      fpsInterval = fps;
+      then = Date.now();
+      animate();
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      now = Date.now();
+      timeElapsed = now - then;
+      if (timeElapsed > fpsInterval) {
+        then = now - (timeElapsed % fpsInterval);
+        game.animation();
+      }
+    }
+  }
 };
 
 btnReset.onclick = function () {
@@ -593,6 +604,7 @@ btnPause.onclick = function () {
   continueGame.classList.add("active");
 };
 
+// Play Again
 btnPlayAgain.onclick = function () {
   lostGame.classList.remove("active");
   game.resetGame();
