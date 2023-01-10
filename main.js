@@ -149,6 +149,258 @@ class Snake {
       }
     }
   }
+
+  changeDirectionWithKeyCode() {
+    window.addEventListener("keydown", (event) => {
+      const keyPressed = event.keyCode;
+      const LEFT = 37;
+      const UP = 38;
+      const RIGHT = 39;
+      const DOWN = 40;
+
+      // check if snake direction top and press down not game over
+      const goingUp = this.yVelocity == -sizeSnakes;
+      const goingDown = this.yVelocity == sizeSnakes;
+      const goingRight = this.xVelocity == sizeSnakes;
+      const goingLeft = this.xVelocity == -sizeSnakes;
+
+      switch (true) {
+        case keyPressed == LEFT && !goingRight:
+          if (
+            this.body[0].x == 0 ||
+            this.body[0].x < 0 ||
+            this.body[0].x >= gameWidth ||
+            this.body[0].y == 0 ||
+            this.body[0].y < 0 ||
+            this.body[0].y >= gameHeight
+          ) {
+            setTimeout(() => {
+              this.xVelocity = -sizeSnakes;
+              this.yVelocity = 0;
+            }, this.speed + 50);
+          } else {
+            if (this.check) {
+              setTimeout(() => {
+                this.xVelocity = -sizeSnakes;
+                this.yVelocity = 0;
+              }, this.speed);
+            } else {
+              this.xVelocity = -sizeSnakes;
+              this.yVelocity = 0;
+            }
+          }
+          this.check = true;
+          break;
+
+        case keyPressed == UP && !goingDown:
+          if (
+            this.body[0].x == 0 ||
+            this.body[0].x < 0 ||
+            this.body[0].x >= gameWidth ||
+            this.body[0].y == 0 ||
+            this.body[0].y < 0 ||
+            this.body[0].y >= gameHeight
+          ) {
+            setTimeout(() => {
+              this.xVelocity = 0;
+              this.yVelocity = -sizeSnakes;
+            }, this.speed + 50);
+          } else {
+            if (this.check) {
+              setTimeout(() => {
+                this.xVelocity = 0;
+                this.yVelocity = -sizeSnakes;
+              }, this.speed);
+            } else {
+              if (this.check) {
+                setTimeout(() => {
+                  this.xVelocity = 0;
+                  this.yVelocity = -sizeSnakes;
+                }, this.speed);
+              } else {
+                this.xVelocity = 0;
+                this.yVelocity = -sizeSnakes;
+              }
+            }
+          }
+          this.check = true;
+
+          break;
+        case keyPressed == RIGHT && !goingLeft:
+          if (
+            this.body[0].x == 0 ||
+            this.body[0].x < 0 ||
+            this.body[0].x >= gameWidth ||
+            this.body[0].y == 0 ||
+            this.body[0].y < 0 ||
+            this.body[0].y >= gameHeight
+          ) {
+            setTimeout(() => {
+              this.xVelocity = sizeSnakes;
+              this.yVelocity = 0;
+            }, this.speed + 50);
+          } else {
+            if (this.check) {
+              setTimeout(() => {
+                this.xVelocity = sizeSnakes;
+                this.yVelocity = 0;
+              }, this.speed);
+            } else {
+              this.xVelocity = sizeSnakes;
+              this.yVelocity = 0;
+            }
+          }
+          this.check = true;
+
+          break;
+        case keyPressed == DOWN && !goingUp:
+          if (
+            this.body[0].x == 0 ||
+            this.body[0].x < 0 ||
+            this.body[0].x >= gameWidth ||
+            this.body[0].y == 0 ||
+            this.body[0].y < 0 ||
+            this.body[0].y >= gameHeight
+          ) {
+            setTimeout(() => {
+              this.xVelocity = 0;
+              this.yVelocity = sizeSnakes;
+            }, this.speed + 50);
+          } else {
+            if (this.check) {
+              setTimeout(() => {
+                this.xVelocity = 0;
+                this.yVelocity = sizeSnakes;
+              }, this.speed);
+            } else {
+              this.xVelocity = 0;
+              this.yVelocity = sizeSnakes;
+            }
+          }
+          this.check = true;
+          break;
+      }
+    });
+  }
+
+  changeDirectionWithButton() {
+    window.addEventListener("click", (event) => {
+      const goingUp = this.yVelocity == -sizeSnakes;
+      const goingDown = this.yVelocity == sizeSnakes;
+      const goingRight = this.xVelocity == sizeSnakes;
+      const goingLeft = this.xVelocity == -sizeSnakes;
+
+      switch (true) {
+        case this.chooseDirection == 1 && !goingRight:
+          if (
+            this.body[0].x == 0 ||
+            this.body[0].x < 0 ||
+            this.body[0].x >= gameWidth ||
+            this.body[0].y == 0 ||
+            this.body[0].y < 0 ||
+            this.body[0].y >= gameHeight
+          ) {
+            setTimeout(() => {
+              this.xVelocity = -sizeSnakes;
+              this.yVelocity = 0;
+            }, this.speed + 50);
+          } else {
+            if (this.check) {
+              setTimeout(() => {
+                this.xVelocity = -sizeSnakes;
+                this.yVelocity = 0;
+              }, this.speed);
+            } else {
+              this.xVelocity = -sizeSnakes;
+              this.yVelocity = 0;
+            }
+          }
+          this.check = true;
+          break;
+
+        case this.chooseDirection == 0 && !goingDown:
+          if (
+            this.body[0].x == 0 ||
+            this.body[0].x < 0 ||
+            this.body[0].x >= gameWidth ||
+            this.body[0].y == 0 ||
+            this.body[0].y < 0 ||
+            this.body[0].y >= gameHeight
+          ) {
+            setTimeout(() => {
+              this.xVelocity = 0;
+              this.yVelocity = -sizeSnakes;
+            }, this.speed + 50);
+          } else {
+            if (this.check) {
+              setTimeout(() => {
+                this.xVelocity = 0;
+                this.yVelocity = -sizeSnakes;
+              }, this.speed);
+            } else {
+              this.xVelocity = 0;
+              this.yVelocity = -sizeSnakes;
+            }
+          }
+          this.check = true;
+          break;
+
+        case this.chooseDirection == 3 && !goingLeft:
+          if (
+            this.body[0].x == 0 ||
+            this.body[0].x < 0 ||
+            this.body[0].x >= gameWidth ||
+            this.body[0].y == 0 ||
+            this.body[0].y < 0 ||
+            this.body[0].y >= gameHeight
+          ) {
+            setTimeout(() => {
+              this.xVelocity = sizeSnakes;
+              this.yVelocity = 0;
+            }, this.speed + 50);
+          } else {
+            if (this.check) {
+              setTimeout(() => {
+                this.xVelocity = sizeSnakes;
+                this.yVelocity = 0;
+              }, this.speed);
+            } else {
+              this.xVelocity = sizeSnakes;
+              this.yVelocity = 0;
+            }
+          }
+          this.check = true;
+          break;
+
+        case this.chooseDirection == 2 && !goingUp:
+          if (
+            this.body[0].x == 0 ||
+            this.body[0].x < 0 ||
+            this.body[0].x >= gameWidth ||
+            this.body[0].y == 0 ||
+            this.body[0].y < 0 ||
+            this.body[0].y >= gameHeight
+          ) {
+            setTimeout(() => {
+              this.xVelocity = 0;
+              this.yVelocity = sizeSnakes;
+            }, this.speed + 50);
+          } else {
+            if (this.check) {
+              setTimeout(() => {
+                this.xVelocity = 0;
+                this.yVelocity = sizeSnakes;
+              }, this.speed);
+            } else {
+              this.xVelocity = 0;
+              this.yVelocity = sizeSnakes;
+            }
+          }
+          this.check = true;
+          break;
+      }
+    });
+  }
 }
 
 class Game {
@@ -162,7 +414,7 @@ class Game {
     this.context.fillStyle = boardBackground;
     this.context.fillRect(0, 0, gameWidth, gameHeight);
   }
-  
+
   drawSnake() {
     this.context.fillStyle = snakeColor;
     this.snake.body.forEach((snakePart) => {
@@ -253,256 +505,6 @@ class Game {
 
 const game = new Game(gameBoard);
 
-function changeDirectionWithKeyCode(event) {
-  const keyPressed = event.keyCode;
-  const LEFT = 37;
-  const UP = 38;
-  const RIGHT = 39;
-  const DOWN = 40;
-
-  // check if snake direction top and press down not game over
-  const goingUp = game.snake.yVelocity == -sizeSnakes;
-  const goingDown = game.snake.yVelocity == sizeSnakes;
-  const goingRight = game.snake.xVelocity == sizeSnakes;
-  const goingLeft = game.snake.xVelocity == -sizeSnakes;
-
-  switch (true) {
-    case keyPressed == LEFT && !goingRight:
-      if (
-        game.snake.body[0].x == 0 ||
-        game.snake.body[0].x < 0 ||
-        game.snake.body[0].x >= gameWidth ||
-        game.snake.body[0].y == 0 ||
-        game.snake.body[0].y < 0 ||
-        game.snake.body[0].y >= gameHeight
-      ) {
-        setTimeout(() => {
-          game.snake.xVelocity = -sizeSnakes;
-          game.snake.yVelocity = 0;
-        }, game.snake.speed + 50);
-      } else {
-        if (game.snake.check) {
-          setTimeout(() => {
-            game.snake.xVelocity = -sizeSnakes;
-            game.snake.yVelocity = 0;
-          }, game.snake.speed);
-        } else {
-          game.snake.xVelocity = -sizeSnakes;
-          game.snake.yVelocity = 0;
-        }
-      }
-      game.snake.check = true;
-      break;
-
-    case keyPressed == UP && !goingDown:
-      if (
-        game.snake.body[0].x == 0 ||
-        game.snake.body[0].x < 0 ||
-        game.snake.body[0].x >= gameWidth ||
-        game.snake.body[0].y == 0 ||
-        game.snake.body[0].y < 0 ||
-        game.snake.body[0].y >= gameHeight
-      ) {
-        setTimeout(() => {
-          game.snake.xVelocity = 0;
-          game.snake.yVelocity = -sizeSnakes;
-        }, game.snake.speed + 50);
-      } else {
-        if (game.snake.check) {
-          setTimeout(() => {
-            game.snake.xVelocity = 0;
-            game.snake.yVelocity = -sizeSnakes;
-          }, game.snake.speed);
-        } else {
-          if (game.snake.check) {
-            setTimeout(() => {
-              game.snake.xVelocity = 0;
-              game.snake.yVelocity = -sizeSnakes;
-            }, game.snake.speed);
-          } else {
-            game.snake.xVelocity = 0;
-            game.snake.yVelocity = -sizeSnakes;
-          }
-        }
-      }
-      game.snake.check = true;
-
-      break;
-    case keyPressed == RIGHT && !goingLeft:
-      if (
-        game.snake.body[0].x == 0 ||
-        game.snake.body[0].x < 0 ||
-        game.snake.body[0].x >= gameWidth ||
-        game.snake.body[0].y == 0 ||
-        game.snake.body[0].y < 0 ||
-        game.snake.body[0].y >= gameHeight
-      ) {
-        setTimeout(() => {
-          game.snake.xVelocity = sizeSnakes;
-          game.snake.yVelocity = 0;
-        }, game.snake.speed + 50);
-      } else {
-        if (game.snake.check) {
-          setTimeout(() => {
-            game.snake.xVelocity = sizeSnakes;
-            game.snake.yVelocity = 0;
-          }, game.snake.speed);
-        } else {
-          game.snake.xVelocity = sizeSnakes;
-          game.snake.yVelocity = 0;
-        }
-      }
-      game.snake.check = true;
-
-      break;
-    case keyPressed == DOWN && !goingUp:
-      if (
-        game.snake.body[0].x == 0 ||
-        game.snake.body[0].x < 0 ||
-        game.snake.body[0].x >= gameWidth ||
-        game.snake.body[0].y == 0 ||
-        game.snake.body[0].y < 0 ||
-        game.snake.body[0].y >= gameHeight
-      ) {
-        setTimeout(() => {
-          game.snake.xVelocity = 0;
-          game.snake.yVelocity = sizeSnakes;
-        }, game.snake.speed + 50);
-      } else {
-        if (game.snake.check) {
-          setTimeout(() => {
-            game.snake.xVelocity = 0;
-            game.snake.yVelocity = sizeSnakes;
-          }, game.snake.speed);
-        } else {
-          game.snake.xVelocity = 0;
-          game.snake.yVelocity = sizeSnakes;
-        }
-      }
-      game.snake.check = true;
-      break;
-  }
-}
-
-function changeDirectionWithButton(event) {
-  const goingUp = game.snake.yVelocity == -sizeSnakes;
-  const goingDown = game.snake.yVelocity == sizeSnakes;
-  const goingRight = game.snake.xVelocity == sizeSnakes;
-  const goingLeft = game.snake.xVelocity == -sizeSnakes;
-
-  switch (true) {
-    case game.snake.chooseDirection == 1 && !goingRight:
-      if (
-        game.snake.body[0].x == 0 ||
-        game.snake.body[0].x < 0 ||
-        game.snake.body[0].x >= gameWidth ||
-        game.snake.body[0].y == 0 ||
-        game.snake.body[0].y < 0 ||
-        game.snake.body[0].y >= gameHeight
-      ) {
-        setTimeout(() => {
-          game.snake.xVelocity = -sizeSnakes;
-          game.snake.yVelocity = 0;
-        }, game.snake.speed + 50);
-      } else {
-        if (game.snake.check) {
-          setTimeout(() => {
-            game.snake.xVelocity = -sizeSnakes;
-            game.snake.yVelocity = 0;
-          }, game.snake.speed);
-        } else {
-          game.snake.xVelocity = -sizeSnakes;
-          game.snake.yVelocity = 0;
-        }
-      }
-      game.snake.check = true;
-      break;
-
-    case game.snake.chooseDirection == 0 && !goingDown:
-      if (
-        game.snake.body[0].x == 0 ||
-        game.snake.body[0].x < 0 ||
-        game.snake.body[0].x >= gameWidth ||
-        game.snake.body[0].y == 0 ||
-        game.snake.body[0].y < 0 ||
-        game.snake.body[0].y >= gameHeight
-      ) {
-        setTimeout(() => {
-          game.snake.xVelocity = 0;
-          game.snake.yVelocity = -sizeSnakes;
-        }, game.snake.speed + 50);
-      } else {
-        if (game.snake.check) {
-          setTimeout(() => {
-            game.snake.xVelocity = 0;
-            game.snake.yVelocity = -sizeSnakes;
-          }, game.snake.speed);
-        } else {
-          game.snake.xVelocity = 0;
-          game.snake.yVelocity = -sizeSnakes;
-        }
-      }
-      game.snake.check = true;
-      break;
-
-    case game.snake.chooseDirection == 3 && !goingLeft:
-      if (
-        game.snake.body[0].x == 0 ||
-        game.snake.body[0].x < 0 ||
-        game.snake.body[0].x >= gameWidth ||
-        game.snake.body[0].y == 0 ||
-        game.snake.body[0].y < 0 ||
-        game.snake.body[0].y >= gameHeight
-      ) {
-        setTimeout(() => {
-          game.snake.xVelocity = sizeSnakes;
-          game.snake.yVelocity = 0;
-        }, game.snake.speed + 50);
-      } else {
-        if (game.snake.check) {
-          setTimeout(() => {
-            game.snake.xVelocity = sizeSnakes;
-            game.snake.yVelocity = 0;
-          }, game.snake.speed);
-        } else {
-          game.snake.xVelocity = sizeSnakes;
-          game.snake.yVelocity = 0;
-        }
-      }
-      game.snake.check = true;
-      break;
-
-    case game.snake.chooseDirection == 2 && !goingUp:
-      if (
-        game.snake.body[0].x == 0 ||
-        game.snake.body[0].x < 0 ||
-        game.snake.body[0].x >= gameWidth ||
-        game.snake.body[0].y == 0 ||
-        game.snake.body[0].y < 0 ||
-        game.snake.body[0].y >= gameHeight
-      ) {
-        setTimeout(() => {
-          game.snake.xVelocity = 0;
-          game.snake.yVelocity = sizeSnakes;
-        }, game.snake.speed + 50);
-      } else {
-        if (game.snake.check) {
-          setTimeout(() => {
-            game.snake.xVelocity = 0;
-            game.snake.yVelocity = sizeSnakes;
-          }, game.snake.speed);
-        } else {
-          game.snake.xVelocity = 0;
-          game.snake.yVelocity = sizeSnakes;
-        }
-      }
-      game.snake.check = true;
-      break;
-  }
-}
-
-window.addEventListener("keydown", changeDirectionWithKeyCode);
-window.addEventListener("click", changeDirectionWithButton);
 window.addEventListener("resize", (event) => {
   screenWidth = event.currentTarget.innerWidth;
   screenWidth = event.currentTarget.innerHeight;
@@ -568,6 +570,8 @@ var fpsInterval, now, then, timeElapsed;
 btnStart.onclick = function () {
   startGame.classList.remove("active");
   game.resetGame();
+  game.snake.changeDirectionWithKeyCode();
+  game.snake.changeDirectionWithButton();
 
   if (game.snake.running) {
     startAnimating(game.snake.speed);
