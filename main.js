@@ -212,7 +212,7 @@ class Snake {
             }, this.speed + 50);
           } else {
             // Nếu bấm 2 nút liên tục thì đợi thực thi hành động 1 mới thực thi hành động 2
-            if (this.check) {
+            if (this.checkPressConsecutive) {
               setTimeout(() => {
                 this.xVelocity = -sizeSnakes;
                 this.yVelocity = 0;
@@ -232,14 +232,14 @@ class Snake {
               this.yVelocity = -sizeSnakes;
             }, this.speed + 50);
           } else {
-            if (this.check) {
+            if (this.checkPressConsecutive) {
               setTimeout(() => {
                 this.xVelocity = 0;
                 this.yVelocity = -sizeSnakes;
               }, this.speed);
             } else {
                // Nếu bấm 2 nút liên tục thì đợi thực thi hành động 1 mới thực thi hành động 2
-              if (this.check) {
+              if (this.checkPressConsecutive) {
                 setTimeout(() => {
                   this.xVelocity = 0;
                   this.yVelocity = -sizeSnakes;
@@ -261,7 +261,7 @@ class Snake {
             }, this.speed + 50);
           } else {
              // Nếu bấm 2 nút liên tục thì đợi thực thi hành động 1 mới thực thi hành động 2
-            if (this.check) {
+            if (this.checkPressConsecutive) {
               setTimeout(() => {
                 this.xVelocity = sizeSnakes;
                 this.yVelocity = 0;
@@ -282,7 +282,7 @@ class Snake {
             }, this.speed + 50);
           } else {
              // Nếu bấm 2 nút liên tục thì đợi thực thi hành động 1 mới thực thi hành động 2
-            if (this.check) {
+            if (this.checkPressConsecutive) {
               setTimeout(() => {
                 this.xVelocity = 0;
                 this.yVelocity = sizeSnakes;
@@ -318,7 +318,7 @@ class Snake {
             }, this.speed + 50);
           } else {
              // Nếu bấm 2 nút liên tục thì đợi thực thi hành động 1 mới thực thi hành động 2
-            if (this.check) {
+            if (this.checkPressConsecutive) {
               setTimeout(() => {
                 this.xVelocity = -sizeSnakes;
                 this.yVelocity = 0;
@@ -339,7 +339,7 @@ class Snake {
             }, this.speed + 50);
           } else {
              // Nếu bấm 2 nút liên tục thì đợi thực thi hành động 1 mới thực thi hành động 2
-            if (this.check) {
+            if (this.checkPressConsecutive) {
               setTimeout(() => {
                 this.xVelocity = 0;
                 this.yVelocity = -sizeSnakes;
@@ -360,7 +360,7 @@ class Snake {
             }, this.speed + 50);
           } else {
              // Nếu bấm 2 nút liên tục thì đợi thực thi hành động 1 mới thực thi hành động 2
-            if (this.check) {
+            if (this.checkPressConsecutive) {
               setTimeout(() => {
                 this.xVelocity = sizeSnakes;
                 this.yVelocity = 0;
@@ -381,7 +381,7 @@ class Snake {
             }, this.speed + 50);
           } else {
              // Nếu bấm 2 nút liên tục thì đợi thực thi hành động 1 mới thực thi hành động 2
-            if (this.check) {
+            if (this.checkPressConsecutive) {
               setTimeout(() => {
                 this.xVelocity = 0;
                 this.yVelocity = sizeSnakes;
