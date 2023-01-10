@@ -21,17 +21,32 @@ const boardBackground = "pink";
 const snakeColor = "#92400e";
 const snakeBorder = "black";
 const foodColor = "red";
-let screenWidth = document.body.clientWidth;
-let screenHeight = screen.height;
-let valueWidth = Math.floor((screenWidth * 0.8) / sizeSnakes) * sizeSnakes;
-let valueHeight = Math.floor((screenHeight * 0.6) / sizeSnakes) * sizeSnakes;
+var screenWidth = document.body.clientWidth;
+var screenHeight = screen.height;
+var valueWidth = Math.floor((screenWidth * 0.8) / sizeSnakes) * sizeSnakes;
+var valueHeight = Math.floor((screenHeight * 0.6) / sizeSnakes) * sizeSnakes;
 var audio = new Audio("assets/music.mp3");
 tools.style.width = `${valueWidth}px`;
 gameBoard.width = `${valueWidth}`;
 gameBoard.height = `${valueHeight}`;
 const gameWidth = gameBoard.width;
 const gameHeight = gameBoard.height;
+var fpsInterval, now, then, timeElapsed;
+var checkMode;
 
+function checkModeTwo(body) {
+  if (
+    body[0].x == 0 ||
+    body[0].x < 0 ||
+    body[0].x >= gameWidth ||
+    body[0].y == 0 ||
+    body[0].y < 0 ||
+    body[0].y >= gameHeight
+  ) {
+    return true;
+  }
+  return false;
+}
 // Create body snake
 function bodySnake(number) {
   let arr = [];
@@ -75,12 +90,33 @@ class Snake {
     this.body = bodySnake(5);
     this.speed;
     this.chooseDirection;
-    this.check;
+    // Biến kiểm tra có bấm 2 nút liên tục không
+    this.checkPressConsecutive;
     this.foodSnake = new Food(context);
   }
 
+  checkSpeedSnake() {
+    chooseSpeeds.forEach((chooseSpeed, index) => {
+      if (chooseSpeed.classList.value.includes("active")) {
+        // Speed slow
+        if (index === 0) {
+          this.speed = 300;
+        }
+        // Speed normal
+        if (index === 1) {
+          this.speed = 200;
+        }
+        // Speed fast
+        if (index === 2) {
+          this.speed = 50;
+        }
+      }
+    });
+  }
+
   moveSnake() {
-    this.check = false;
+    this.checkSpeedSnake();
+    this.checkPressConsecutive = false;
     if (!this.running && !startGame.classList.value.includes("active")) {
       lostGame.classList.add("active");
       lostGameScore.textContent = scoreText.textContent;
@@ -90,17 +126,11 @@ class Snake {
       !continueGame.classList.value.includes("active") &&
       !countNumber.classList.value.includes("active")
     ) {
-      let checkMode;
-      chooseModes.forEach((chooseMode, index) => {
-        if (chooseMode.classList.value.includes("active")) {
-          checkMode = index;
-        }
-      });
-
       let head = {
         x: this.body[0].x + this.xVelocity,
         y: this.body[0].y + this.yVelocity,
       };
+
       if (checkMode === 1) {
         switch (true) {
           case this.body[0].x >= gameWidth:
@@ -135,16 +165,22 @@ class Snake {
             break;
         }
       }
+      // Thêm phần tử head vào vị trí đầu tiên của mảng Snake
       this.body.unshift(head);
 
       if (
         this.body[0].x == this.foodSnake.foodX &&
         this.body[0].y == this.foodSnake.foodY
       ) {
+        // Nếu vị trí phần tử đầu tiên của body trùng với vị trí của food thì
+        // score cộng thêm 1
+        // tạo ra food mới
         this.score += 1;
         scoreText.textContent = this.score;
         this.foodSnake.createFood();
       } else {
+        // Nếu vị trí phần tử đầu tiên của body không trùng với vị trí của food thì
+        // xóa bỏ vị trí cuối cùng trong body
         this.body.pop();
       }
     }
@@ -158,27 +194,24 @@ class Snake {
       const RIGHT = 39;
       const DOWN = 40;
 
-      // check if snake direction top and press down not game over
+      // check if snake direction dowm and press up not game over
       const goingUp = this.yVelocity == -sizeSnakes;
+      // check if snake direction top and press down not game over
       const goingDown = this.yVelocity == sizeSnakes;
+      // check if snake direction left and press right not game over
       const goingRight = this.xVelocity == sizeSnakes;
+      // check if snake direction right and press left not game over
       const goingLeft = this.xVelocity == -sizeSnakes;
 
       switch (true) {
         case keyPressed == LEFT && !goingRight:
-          if (
-            this.body[0].x == 0 ||
-            this.body[0].x < 0 ||
-            this.body[0].x >= gameWidth ||
-            this.body[0].y == 0 ||
-            this.body[0].y < 0 ||
-            this.body[0].y >= gameHeight
-          ) {
+          if (checkModeTwo(this.body)) {
             setTimeout(() => {
               this.xVelocity = -sizeSnakes;
               this.yVelocity = 0;
             }, this.speed + 50);
           } else {
+            // Nếu bấm 2 nút liên tục thì đợi thực thi hành động 1 mới thực thi hành động 2
             if (this.check) {
               setTimeout(() => {
                 this.xVelocity = -sizeSnakes;
@@ -189,18 +222,11 @@ class Snake {
               this.yVelocity = 0;
             }
           }
-          this.check = true;
+          this.checkPressConsecutive = true;
           break;
 
         case keyPressed == UP && !goingDown:
-          if (
-            this.body[0].x == 0 ||
-            this.body[0].x < 0 ||
-            this.body[0].x >= gameWidth ||
-            this.body[0].y == 0 ||
-            this.body[0].y < 0 ||
-            this.body[0].y >= gameHeight
-          ) {
+          if (checkModeTwo(this.body)) {
             setTimeout(() => {
               this.xVelocity = 0;
               this.yVelocity = -sizeSnakes;
@@ -212,6 +238,7 @@ class Snake {
                 this.yVelocity = -sizeSnakes;
               }, this.speed);
             } else {
+               // Nếu bấm 2 nút liên tục thì đợi thực thi hành động 1 mới thực thi hành động 2
               if (this.check) {
                 setTimeout(() => {
                   this.xVelocity = 0;
@@ -223,23 +250,17 @@ class Snake {
               }
             }
           }
-          this.check = true;
+          this.checkPressConsecutive = true;
 
           break;
         case keyPressed == RIGHT && !goingLeft:
-          if (
-            this.body[0].x == 0 ||
-            this.body[0].x < 0 ||
-            this.body[0].x >= gameWidth ||
-            this.body[0].y == 0 ||
-            this.body[0].y < 0 ||
-            this.body[0].y >= gameHeight
-          ) {
+          if (checkModeTwo(this.body)) {
             setTimeout(() => {
               this.xVelocity = sizeSnakes;
               this.yVelocity = 0;
             }, this.speed + 50);
           } else {
+             // Nếu bấm 2 nút liên tục thì đợi thực thi hành động 1 mới thực thi hành động 2
             if (this.check) {
               setTimeout(() => {
                 this.xVelocity = sizeSnakes;
@@ -250,23 +271,17 @@ class Snake {
               this.yVelocity = 0;
             }
           }
-          this.check = true;
+          this.checkPressConsecutive = true;
 
           break;
         case keyPressed == DOWN && !goingUp:
-          if (
-            this.body[0].x == 0 ||
-            this.body[0].x < 0 ||
-            this.body[0].x >= gameWidth ||
-            this.body[0].y == 0 ||
-            this.body[0].y < 0 ||
-            this.body[0].y >= gameHeight
-          ) {
+          if (checkModeTwo(this.body)) {
             setTimeout(() => {
               this.xVelocity = 0;
               this.yVelocity = sizeSnakes;
             }, this.speed + 50);
           } else {
+             // Nếu bấm 2 nút liên tục thì đợi thực thi hành động 1 mới thực thi hành động 2
             if (this.check) {
               setTimeout(() => {
                 this.xVelocity = 0;
@@ -277,7 +292,7 @@ class Snake {
               this.yVelocity = sizeSnakes;
             }
           }
-          this.check = true;
+          this.checkPressConsecutive = true;
           break;
       }
     });
@@ -285,26 +300,24 @@ class Snake {
 
   changeDirectionWithButton() {
     window.addEventListener("click", (event) => {
+      // check if snake direction dowm and press up not game over
       const goingUp = this.yVelocity == -sizeSnakes;
+      // check if snake direction top and press down not game over
       const goingDown = this.yVelocity == sizeSnakes;
+      // check if snake direction left and press right not game over
       const goingRight = this.xVelocity == sizeSnakes;
+      // check if snake direction right and press left not game over
       const goingLeft = this.xVelocity == -sizeSnakes;
 
       switch (true) {
         case this.chooseDirection == 1 && !goingRight:
-          if (
-            this.body[0].x == 0 ||
-            this.body[0].x < 0 ||
-            this.body[0].x >= gameWidth ||
-            this.body[0].y == 0 ||
-            this.body[0].y < 0 ||
-            this.body[0].y >= gameHeight
-          ) {
+          if (checkModeTwo(this.body)) {
             setTimeout(() => {
               this.xVelocity = -sizeSnakes;
               this.yVelocity = 0;
             }, this.speed + 50);
           } else {
+             // Nếu bấm 2 nút liên tục thì đợi thực thi hành động 1 mới thực thi hành động 2
             if (this.check) {
               setTimeout(() => {
                 this.xVelocity = -sizeSnakes;
@@ -315,23 +328,17 @@ class Snake {
               this.yVelocity = 0;
             }
           }
-          this.check = true;
+          this.checkPressConsecutive = true;
           break;
 
         case this.chooseDirection == 0 && !goingDown:
-          if (
-            this.body[0].x == 0 ||
-            this.body[0].x < 0 ||
-            this.body[0].x >= gameWidth ||
-            this.body[0].y == 0 ||
-            this.body[0].y < 0 ||
-            this.body[0].y >= gameHeight
-          ) {
+          if (checkModeTwo(this.body)) {
             setTimeout(() => {
               this.xVelocity = 0;
               this.yVelocity = -sizeSnakes;
             }, this.speed + 50);
           } else {
+             // Nếu bấm 2 nút liên tục thì đợi thực thi hành động 1 mới thực thi hành động 2
             if (this.check) {
               setTimeout(() => {
                 this.xVelocity = 0;
@@ -342,23 +349,17 @@ class Snake {
               this.yVelocity = -sizeSnakes;
             }
           }
-          this.check = true;
+          this.checkPressConsecutive = true;
           break;
 
         case this.chooseDirection == 3 && !goingLeft:
-          if (
-            this.body[0].x == 0 ||
-            this.body[0].x < 0 ||
-            this.body[0].x >= gameWidth ||
-            this.body[0].y == 0 ||
-            this.body[0].y < 0 ||
-            this.body[0].y >= gameHeight
-          ) {
+          if (checkModeTwo(this.body)) {
             setTimeout(() => {
               this.xVelocity = sizeSnakes;
               this.yVelocity = 0;
             }, this.speed + 50);
           } else {
+             // Nếu bấm 2 nút liên tục thì đợi thực thi hành động 1 mới thực thi hành động 2
             if (this.check) {
               setTimeout(() => {
                 this.xVelocity = sizeSnakes;
@@ -369,23 +370,17 @@ class Snake {
               this.yVelocity = 0;
             }
           }
-          this.check = true;
+          this.checkPressConsecutive = true;
           break;
 
         case this.chooseDirection == 2 && !goingUp:
-          if (
-            this.body[0].x == 0 ||
-            this.body[0].x < 0 ||
-            this.body[0].x >= gameWidth ||
-            this.body[0].y == 0 ||
-            this.body[0].y < 0 ||
-            this.body[0].y >= gameHeight
-          ) {
+          if (checkModeTwo(this.body)) {
             setTimeout(() => {
               this.xVelocity = 0;
               this.yVelocity = sizeSnakes;
             }, this.speed + 50);
           } else {
+             // Nếu bấm 2 nút liên tục thì đợi thực thi hành động 1 mới thực thi hành động 2
             if (this.check) {
               setTimeout(() => {
                 this.xVelocity = 0;
@@ -396,7 +391,7 @@ class Snake {
               this.yVelocity = sizeSnakes;
             }
           }
-          this.check = true;
+          this.checkPressConsecutive = true;
           break;
       }
     });
@@ -423,12 +418,8 @@ class Game {
   }
 
   checkGameOver() {
-    let checkMode;
-    chooseModes.forEach((chooseMode, index) => {
-      if (chooseMode.classList.value.includes("active")) {
-        checkMode = index;
-      }
-    });
+
+    // Với mode 1 đụng vô khung thành die
     if (checkMode === 0) {
       switch (true) {
         case startGame.classList.value.includes("active"):
@@ -450,6 +441,7 @@ class Game {
       }
     }
 
+    // Đụng thân rắn die
     for (let i = 1; i < this.snake.body.length; i += 1) {
       if (
         this.snake.body[i].x == this.snake.body[0].x &&
@@ -466,30 +458,14 @@ class Game {
     this.snake.moveSnake();
     this.drawSnake();
     this.checkGameOver();
-    this.nextTick();
-  }
-
-  nextTick() {
-    chooseSpeeds.forEach((chooseSpeed, index) => {
-      if (chooseSpeed.classList.value.includes("active")) {
-        if (index === 0) {
-          this.snake.speed = 300;
-        }
-        if (index === 1) {
-          this.snake.speed = 200;
-        }
-        if (index === 2) {
-          this.snake.speed = 50;
-        }
-      }
-    });
+    this.snake.checkSpeedSnake();
   }
 
   gameStart() {
     this.snake.running = true;
     this.snake.foodSnake.createFood();
     this.snake.foodSnake.drawFood(this.context);
-    this.nextTick();
+    this.snake.checkSpeedSnake();
   }
 
   resetGame() {
@@ -505,6 +481,7 @@ class Game {
 
 const game = new Game(gameBoard);
 
+// Thay đổi kích thước canvas khi thay đổi kích thước màn hình
 window.addEventListener("resize", (event) => {
   screenWidth = event.currentTarget.innerWidth;
   screenWidth = event.currentTarget.innerHeight;
@@ -515,6 +492,7 @@ window.addEventListener("resize", (event) => {
   gameBoard.height = `${valueHeight}`;
 });
 
+// set time after click continue
 function changeCountNumber() {
   let number = 2;
   countNumber.textContent = 3;
@@ -553,6 +531,7 @@ chooseModes.forEach((chooseMode, index) => {
   chooseMode.onclick = function (e) {
     document.querySelector(".choose__mode.active").classList.remove("active");
     chooseMode.classList.add("active");
+    checkMode = index;
   };
 });
 
@@ -564,14 +543,19 @@ chooseSpeeds.forEach((chooseSpeed, index) => {
   };
 });
 
-var fpsInterval, now, then, timeElapsed;
 
-// On off container startGame
+// On off startGame
 btnStart.onclick = function () {
   startGame.classList.remove("active");
   game.resetGame();
   game.snake.changeDirectionWithKeyCode();
   game.snake.changeDirectionWithButton();
+
+  chooseModes.forEach((chooseMode, index) => {
+    if (chooseMode.classList.value.includes("active")) {
+      checkMode = index;
+    }
+  });
 
   if (game.snake.running) {
     startAnimating(game.snake.speed);
@@ -598,7 +582,7 @@ btnReset.onclick = function () {
   startGame.classList.add("active");
 };
 
-// On off container continueGame
+// On off continueGame
 btnContinueGame.onclick = function () {
   continueGame.classList.remove("active");
   countNumber.classList.add("active");
