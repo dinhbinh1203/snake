@@ -32,6 +32,17 @@ gameBoard.height = `${valueHeight}`;
 const gameWidth = gameBoard.width;
 const gameHeight = gameBoard.height;
 
+// Create body snake
+function bodySnake(number) {
+  let arr = [];
+  for (let i = number - 1; i > -1; i--) {
+    let obj = { x: sizeSnakes * i, y: 0 };
+    arr.push(obj);
+  }
+  return arr;
+}
+
+
 class Snake {
   constructor() {
     this.running = false;
@@ -40,14 +51,7 @@ class Snake {
     this.foodX;
     this.foodY;
     this.score = 0;
-    this.body = [
-      { x: sizeSnakes * 5, y: 0 },
-      { x: sizeSnakes * 4, y: 0 },
-      { x: sizeSnakes * 3, y: 0 },
-      { x: sizeSnakes * 2, y: 0 },
-      { x: sizeSnakes, y: 0 },
-      { x: 0, y: 0 },
-    ];
+    this.body = bodySnake(5)
     this.speed;
     this.chooseDirection;
     this.check;
@@ -238,14 +242,7 @@ class Game {
     scoreText.textContent = 0;
     this.snake.xVelocity = sizeSnakes;
     this.snake.yVelocity = 0;
-    this.snake.body = [
-      { x: sizeSnakes * 5, y: 0 },
-      { x: sizeSnakes * 4, y: 0 },
-      { x: sizeSnakes * 3, y: 0 },
-      { x: sizeSnakes * 2, y: 0 },
-      { x: sizeSnakes, y: 0 },
-      { x: 0, y: 0 },
-    ];
+    this.snake.body = bodySnake(5)
     this.snake.chooseDirection = undefined;
   }
 }
