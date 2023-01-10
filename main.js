@@ -42,19 +42,11 @@ function bodySnake(number) {
   return arr;
 }
 
-
-class Snake {
-  constructor() {
-    this.running = false;
-    this.xVelocity = sizeSnakes;
-    this.yVelocity = 0;
+class Food {
+  constructor(context) {
     this.foodX;
     this.foodY;
-    this.score = 0;
-    this.body = bodySnake(5)
-    this.speed;
-    this.chooseDirection;
-    this.check;
+    this.context = context;
   }
 
   createFood() {
@@ -66,6 +58,25 @@ class Snake {
     }
     this.foodX = randomFood(0, gameWidth - sizeSnakes);
     this.foodY = randomFood(0, gameHeight - sizeSnakes);
+  }
+
+  drawFood() {
+    this.context.fillStyle = foodColor;
+    this.context.fillRect(this.foodX, this.foodY, sizeSnakes, sizeSnakes);
+  }
+}
+
+class Snake {
+  constructor(context) {
+    this.running = false;
+    this.xVelocity = sizeSnakes;
+    this.yVelocity = 0;
+    this.score = 0;
+    this.body = bodySnake(5);
+    this.speed;
+    this.chooseDirection;
+    this.check;
+    this.foodSnake = new Food(context);
   }
 
   moveSnake() {
@@ -126,10 +137,13 @@ class Snake {
       }
       this.body.unshift(head);
 
-      if (this.body[0].x == this.foodX && this.body[0].y == this.foodY) {
+      if (
+        this.body[0].x == this.foodSnake.foodX &&
+        this.body[0].y == this.foodSnake.foodY
+      ) {
         this.score += 1;
         scoreText.textContent = this.score;
-        this.createFood();
+        this.foodSnake.createFood();
       } else {
         this.body.pop();
       }
@@ -139,26 +153,16 @@ class Snake {
 
 class Game {
   constructor(canvas) {
-    this.snake = new Snake();
     this.canvas = canvas;
     this.context = canvas.getContext("2d");
+    this.snake = new Snake(this.context);
   }
 
   clearGame() {
     this.context.fillStyle = boardBackground;
     this.context.fillRect(0, 0, gameWidth, gameHeight);
   }
-
-  drawFood() {
-    this.context.fillStyle = foodColor;
-    this.context.fillRect(
-      this.snake.foodX,
-      this.snake.foodY,
-      sizeSnakes,
-      sizeSnakes
-    );
-  }
-
+  
   drawSnake() {
     this.context.fillStyle = snakeColor;
     this.snake.body.forEach((snakePart) => {
@@ -206,7 +210,7 @@ class Game {
 
   animation() {
     this.clearGame();
-    this.drawFood();
+    this.snake.foodSnake.drawFood(this.context);
     this.snake.moveSnake();
     this.drawSnake();
     this.checkGameOver();
@@ -231,8 +235,8 @@ class Game {
 
   gameStart() {
     this.snake.running = true;
-    this.snake.createFood();
-    this.drawFood();
+    this.snake.foodSnake.createFood();
+    this.snake.foodSnake.drawFood(this.context);
     this.nextTick();
   }
 
@@ -242,7 +246,7 @@ class Game {
     scoreText.textContent = 0;
     this.snake.xVelocity = sizeSnakes;
     this.snake.yVelocity = 0;
-    this.snake.body = bodySnake(5)
+    this.snake.body = bodySnake(5);
     this.snake.chooseDirection = undefined;
   }
 }
